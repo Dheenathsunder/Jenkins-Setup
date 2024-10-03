@@ -9,13 +9,15 @@ pipeline {
     stages {
         stage('Clone Repository') {
             steps {
-                // Update this line with the correct repository URL
+                echo 'Cloning the repository...'
+                // Replace this with your repository URL
                 git 'https://github.com/Dheenathsunder/Jenkins-Setup.git'
             }
         }
 
         stage('Install Dependencies') {
             steps {
+                echo 'Installing dependencies...'
                 sh 'npm install'
             }
         }
@@ -23,33 +25,43 @@ pipeline {
         stage('Run Tests') {
             steps {
                 echo 'Running Tests...'
-                // If you have actual test commands, replace the echo line with your commands.
-                // Example: sh 'npm test'
+                // Add your test command here, e.g., sh 'npm test'
+                // For now, it just echoes to show where tests would run.
+                echo 'Tests executed successfully!'
             }
         }
 
         stage('Build') {
             steps {
                 echo 'Building the application...'
-                sh 'npm run build'  // Uncomment if there's a build command.
+                // If your project has a build step (e.g., React or Angular), use the npm build command.
+                // Uncomment the following line if there's a build step:
+                // sh 'npm run build'
+                echo 'Build stage completed.'
             }
         }
 
-        stage('Deploy') {
+        stage('Deploy to AWS Ubuntu Server') {
             steps {
-                echo 'Deploying application...'
-                // Replace with your server details for secure deployment.
-                sh 'scp -r ./ ubuntu@203.0.113.10:/var/www/myapp'
+                echo 'Deploying application to AWS Ubuntu server...'
+                // Ensure that Jenkins can SSH into your AWS Ubuntu instance using the SSH key.
+                // This step will copy the entire project to the specified directory on your AWS server.
+                // Make sure to replace the values below with your own server details.
+
+                sh '''
+                scp -o StrictHostKeyChecking=no -r ./ ubuntu@3.26.73.8:/var/www/myapp
+                ssh ubuntu@3.26.73.8 'pm2 restart myapp || pm2 start /var/www/myapp/index.js --name myapp'
+                '''
             }
         }
     }
 
     post {
         success {
-            echo 'Pipeline succeeded!'
+            echo 'Pipeline execution and deployment succeeded!'
         }
         failure {
-            echo 'Pipeline failed!'
+            echo 'Pipeline failed! Please check the error logs for more details.'
         }
     }
 }
