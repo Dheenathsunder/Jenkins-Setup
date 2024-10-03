@@ -9,28 +9,37 @@ pipeline {
     stages {
         stage('Clone Repository') {
             steps {
-                git 'https://github.com/your-username/ci-cd-sample-app.git'
+                // Update this line with the correct repository URL
+                git 'https://github.com/Dheenathsunder/Jenkins-Setup.git'
             }
         }
+
         stage('Install Dependencies') {
             steps {
                 sh 'npm install'
             }
         }
+
         stage('Run Tests') {
             steps {
                 echo 'Running Tests...'
+                // If you have actual test commands, replace the echo line with your commands.
+                // Example: sh 'npm test'
             }
         }
+
         stage('Build') {
             steps {
                 echo 'Building the application...'
-                sh 'npm run build'
+                sh 'npm run build'  // Uncomment if there's a build command.
             }
         }
+
         stage('Deploy') {
             steps {
-                sh 'scp -r ./ your-server-user@your-server-ip:/path/to/deploy'
+                echo 'Deploying application...'
+                // Replace with your server details for secure deployment.
+                sh 'scp -r ./ ubuntu@203.0.113.10:/var/www/myapp'
             }
         }
     }
